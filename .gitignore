@@ -1,0 +1,4 @@
+vendor
+**/.DS_Store
+index.php
+.phpunit.result.cache

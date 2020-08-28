@@ -1,0 +1,21 @@
+{
+  "name": "brainex/pagenator",
+  "description": "Simple PHP Pager library",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Salawu Oluwadamilola Ezekiel",
+      "email": "damilolaoffical@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Brainex\\Pagenator\\": "src/"
+    }
+  },
+  "require": {},
+  "require-dev": {
+    "pestphp/pest": "^0.3.0"
+  }
+}
