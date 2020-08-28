@@ -1,9 +1,11 @@
-# brainex/pagenator
+# dammynex/pagenator
 
 Pagenator is a simple php pagination library
 
 ```php
 <?php
+
+use Dammynex\Pagenator\Pagenator;
 
 $pagenator = new Pagenator();
 $pagenator->setTotalPages(10);
