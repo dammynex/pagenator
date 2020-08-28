@@ -153,13 +153,15 @@ class Pagenator
             $pagelist[] = new PageItem(true, 'prev', $this->getPreviousPage());
         }
 
+        $checkpoint = 3;
+
         //Return first page if current page
         //is greater than the four pages
-        if($this->current_page > 4) {
+        if($this->current_page > $checkpoint) {
             $pagelist[] = new PageItem(true, 1, 1);
         }
         
-        if($this->total_pages > 4) {
+        if($this->total_pages > $checkpoint && $this->current_page > $checkpoint) {
             $pagelist[] = $dots;
         }
 
