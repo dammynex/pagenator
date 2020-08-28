@@ -111,6 +111,26 @@ class Pagenator
     }
 
     /**
+     * Get current page
+     *
+     * @return integer
+     */
+    public function getCurrentPage(): int
+    {
+        return $this->current_page;
+    }
+
+    /**
+     * Get total pages
+     *
+     * @return integer
+     */
+    public function getTotalPages(): int
+    {
+        return $this->total_pages;
+    }
+
+    /**
      * Get page list
      *
      * @return array
