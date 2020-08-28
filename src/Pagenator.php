@@ -1,6 +1,6 @@
 <?php
 
-namespace Brainex\Pagenator;
+namespace Dammynex\Pagenator;
 
 class Pagenator
 {

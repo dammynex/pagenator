@@ -1,6 +1,6 @@
 <?php
 
-use Brainex\Pagenator\Pagenator;
+use Dammynex\Pagenator\Pagenator;
 
 $pagenator = new Pagenator();
 
