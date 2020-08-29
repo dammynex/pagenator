@@ -117,7 +117,7 @@ class Pagenator
      */
     public function getCurrentPage(): int
     {
-        return $this->current_page;
+        return $this->total_pages > 0 ? $this->current_page : 0;
     }
 
     /**
