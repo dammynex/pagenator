@@ -57,10 +57,10 @@ class Pagenator
     /**
      * Set page params
      *
-     * @param array $params
+     * @param array|null $params
      * @return boolean
      */
-    public function setParams(array $params): bool
+    public function setParams(?array $params = null): bool
     {
         $this->params = $params;
         return true;
