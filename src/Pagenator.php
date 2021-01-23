@@ -13,17 +13,21 @@ class Pagenator
     /** @var int */
     private $range = 5;
 
+    /** @var array */
+    private $params = null;
+
     /**
      * Class constructor
      *
      * @param integer $total_pages
      * @param integer $current_page
      */
-    public function __construct(int $total_pages = 0, int $current_page = 0, int $range = 5)
+    public function __construct(int $total_pages = 0, int $current_page = 0, int $range = 5, ?array $params = null)
     {
         $this->setTotalPages($total_pages);
         $this->setCurrentPage($current_page);
         $this->setRange($range);
+        $this->setParams($params);
     }
 
     /**
@@ -47,6 +51,18 @@ class Pagenator
     public function setCurrentPage(int $current_page): bool
     {
         $this->current_page = $current_page;
+        return true;
+    }
+
+    /**
+     * Set page params
+     *
+     * @param array $params
+     * @return boolean
+     */
+    public function setParams(array $params): bool
+    {
+        $this->params = $params;
         return true;
     }
 
@@ -170,10 +186,15 @@ class Pagenator
         $dots = new PageItem(false, '...');
 
         if($this->hasPreviousPage()) {
-            $pagelist[] = new PageItem(true, 'prev', $this->getPreviousPage());
+            $pagelist[] = new PageItem(
+                true,
+                'prev',
+                $this->getPreviousPage(),
+                false, $this->params
+            );
         }
 
-        $checkpoint = 3;
+        $checkpoint = 4;
 
         //Return first page if current page
         //is greater than the four pages
@@ -186,7 +207,13 @@ class Pagenator
         }
 
         $list = array_map(function ($page) {
-            return new PageItem(true, $page, $page, $page === $this->current_page);
+            return new PageItem(
+                true,
+                $page,
+                $page,
+                $page === $this->current_page,
+                $this->params
+        );
         }, $this->getList());
 
         $pagelist = [...$pagelist, ...$list];
@@ -197,7 +224,13 @@ class Pagenator
         }
 
         if($this->hasNextPage()) {
-            $pagelist[] = new PageItem(true, 'next', $this->getNextPage());
+            $pagelist[] = new PageItem(
+                true,
+                'next',
+                $this->getNextPage(),
+                false,
+                $this->params
+            );
         }
 
         return $pagelist;
