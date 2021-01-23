@@ -16,12 +16,16 @@ class PageItem
     /** @var bool */
     protected $is_current;
 
-    public function __construct(bool $is_page, string $name, ?int $value = null, bool $is_current = false)
+    /** @var array|null */
+    protected $params = null;
+
+    public function __construct(bool $is_page, string $name, ?int $value = null, bool $is_current = false, ?array $params = null)
     {
         $this->is_page = $is_page;
         $this->name = $name;
         $this->value = $value;
         $this->is_current = $is_current;
+        $this->params = $params;
     }
 
     /**
@@ -52,6 +56,16 @@ class PageItem
     public function getName(): string
     {
         return (string) $this->name;
+    }
+
+    /**
+     * Get params
+     *
+     * @return string|null
+     */
+    public function getParams(): ?string
+    {
+        return $this->params ? http_build_query($this->params) : null;
     }
 
     /**
