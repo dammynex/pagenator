@@ -5,40 +5,44 @@ namespace Dammynex\Pagenator;
 class Pagenator
 {
     /** @var int */
-    private $total_pages;
+    protected $items_count;
 
     /** @var int */
-    private $current_page = 1;
+    protected $current_page = 1;
 
     /** @var int */
-    private $range = 5;
+    protected $range = 5;
 
     /** @var array */
-    private $params = null;
+    protected $params = null;
+
+    /** @var int */
+    protected $perpage;
 
     /**
      * Class constructor
      *
-     * @param integer $total_pages
+     * @param integer $items_count
      * @param integer $current_page
      */
-    public function __construct(int $total_pages = 0, int $current_page = 0, int $range = 5, ?array $params = null)
+    public function __construct(int $items_count = 0, int $current_page = 0, int $perpage = 10, int $range = 5, ?array $params = null)
     {
-        $this->setTotalPages($total_pages);
+        $this->setItemsCount($items_count);
         $this->setCurrentPage($current_page);
         $this->setRange($range);
         $this->setParams($params);
+        $this->setPerPage($perpage);
     }
 
     /**
-     * Set total pages
+     * Set number of items
      *
-     * @param integer $total_pages
+     * @param integer $items_count
      * @return boolean
      */
-    public function setTotalPages(int $total_pages): bool
+    public function setItemsCount(int $items_count): bool
     {
-        $this->total_pages = $total_pages;
+        $this->items_count = $items_count;
         return true;
     }
 
@@ -67,6 +71,18 @@ class Pagenator
     }
 
     /**
+     * Set pager limit
+     *
+     * @param integer $limit
+     * @return int
+     */
+    public function setPerPage(int $limit)
+    {
+        $this->perpage = $limit;
+        return true;
+    }
+
+    /**
      * Set page range
      *
      * @param integer $range
@@ -85,11 +101,9 @@ class Pagenator
      */
     public function hasPreviousPage(): bool
     {
-        if(!$this->total_pages) {
-            return false;
-        }
-
-        return $this->current_page > 1;
+        return $this->getTotalPages()
+                ? ($this->current_page > 1)
+                : false;
     }
 
     /**
@@ -99,11 +113,19 @@ class Pagenator
      */
     public function hasNextPage(): bool
     {
-        if(!$this->total_pages) {
-            return false;
-        }
+        return $this->getTotalPages()
+                ? ($this->current_page < $this->getTotalPages())
+                : false;
+    }
 
-        return $this->current_page < $this->total_pages;
+    /**
+     * Get paging offset
+     *
+     * @return integer
+     */
+    public function getOffset(): int
+    {
+        return ($this->current_page - 1)  * $this->perpage;
     }
 
     /**
@@ -133,7 +155,17 @@ class Pagenator
      */
     public function getCurrentPage(): int
     {
-        return $this->total_pages > 0 ? $this->current_page : 0;
+        return $this->getTotalPages() > 0 ? $this->current_page : 0;
+    }
+
+    /**
+     * Get number of items
+     *
+     * @return integer
+     */
+    public function getItemsCount(): int
+    {
+        return $this->items_count;
     }
 
     /**
@@ -143,7 +175,7 @@ class Pagenator
      */
     public function getTotalPages(): int
     {
-        return $this->total_pages;
+        return ceil($this->items_count / $this->perpage);
     }
 
     /**
@@ -153,7 +185,7 @@ class Pagenator
      */
     public function getList(): array
     {
-        if(!$this->total_pages) {
+        if(!$this->getTotalPages()) {
             return [];
         }
 
@@ -161,7 +193,7 @@ class Pagenator
 
         for($i = $this->getStartPoint(); $i <= $this->getStopPoint(); $i++) {
 
-            if($i < 1 || $i > $this->total_pages) {
+            if($i < 1 || $i > $this->getTotalPages()) {
                 continue;
             }
 
@@ -202,7 +234,7 @@ class Pagenator
             $pagelist[] = new PageItem(true, 1, 1);
         }
         
-        if($this->total_pages > $checkpoint && $this->current_page > $checkpoint) {
+        if($this->getTotalPages() > $checkpoint && $this->current_page > $checkpoint) {
             $pagelist[] = $dots;
         }
 
@@ -218,9 +250,9 @@ class Pagenator
 
         $pagelist = [...$pagelist, ...$list];
 
-        if(($this->total_pages - $this->current_page) > $this->range) {
+        if(($this->getTotalPages() - $this->current_page) > $this->range) {
             $pagelist[] = $dots;
-            $pagelist[] = new PageItem(true, $this->total_pages, $this->total_pages);
+            $pagelist[] = new PageItem(true, $this->getTotalPages(), $this->getTotalPages());
         }
 
         if($this->hasNextPage()) {
@@ -253,10 +285,10 @@ class Pagenator
      */
     public function getStopPoint(): int
     {
-        if($this->current_page > ($this->total_pages - ($this->range * 2))) {
-            return $this->total_pages + ($this->range * 2);
+        if($this->current_page > ($this->getTotalPages() - ($this->range * 2))) {
+            return $this->getTotalPages() + ($this->range * 2);
         }
 
-        return $this->total_pages -  $this->range;
+        return $this->getTotalPages() -  $this->range;
     }
 }
