@@ -102,8 +102,8 @@ class Pagenator
     public function hasPreviousPage(): bool
     {
         return $this->getTotalPages()
-                ? ($this->current_page > 1)
-                : false;
+            ? ($this->current_page > 1)
+            : false;
     }
 
     /**
@@ -114,8 +114,8 @@ class Pagenator
     public function hasNextPage(): bool
     {
         return $this->getTotalPages()
-                ? ($this->current_page < $this->getTotalPages())
-                : false;
+            ? ($this->current_page < $this->getTotalPages())
+            : false;
     }
 
     /**
@@ -126,6 +126,16 @@ class Pagenator
     public function getOffset(): int
     {
         return ($this->current_page - 1)  * $this->perpage;
+    }
+
+    /**
+     * Get page parameters
+     *
+     * @return array|null
+     */
+    public function getParams(): ?array
+    {
+        return $this->params;
     }
 
     /**
@@ -185,19 +195,19 @@ class Pagenator
      */
     public function getList(): array
     {
-        if(!$this->getTotalPages()) {
+        if (!$this->getTotalPages()) {
             return [];
         }
 
         $list = [];
 
-        for($i = $this->getStartPoint(); $i <= $this->getStopPoint(); $i++) {
+        for ($i = $this->getStartPoint(); $i <= $this->getStopPoint(); $i++) {
 
-            if($i < 1 || $i > $this->getTotalPages()) {
+            if ($i < 1 || $i > $this->getTotalPages()) {
                 continue;
             }
 
-            if(count($list) > ($this->range - 1)) {
+            if (count($list) > ($this->range - 1)) {
                 break;
             }
 
@@ -217,12 +227,13 @@ class Pagenator
         $pagelist = [];
         $dots = new PageItem(false, '...');
 
-        if($this->hasPreviousPage()) {
+        if ($this->hasPreviousPage()) {
             $pagelist[] = new PageItem(
                 true,
                 'prev',
                 $this->getPreviousPage(),
-                false, $this->params
+                false,
+                $this->params
             );
         }
 
@@ -230,11 +241,11 @@ class Pagenator
 
         //Return first page if current page
         //is greater than the four pages
-        if($this->current_page > $checkpoint) {
-            $pagelist[] = new PageItem(true, 1, 1);
+        if ($this->current_page > $checkpoint) {
+            $pagelist[] = new PageItem(true, 1, 1, false, $this->params);
         }
-        
-        if($this->getTotalPages() > $checkpoint && $this->current_page > $checkpoint) {
+
+        if ($this->getTotalPages() > $checkpoint && $this->current_page > $checkpoint) {
             $pagelist[] = $dots;
         }
 
@@ -245,17 +256,23 @@ class Pagenator
                 $page,
                 $page === $this->current_page,
                 $this->params
-        );
+            );
         }, $this->getList());
 
         $pagelist = [...$pagelist, ...$list];
 
-        if(($this->getTotalPages() - $this->current_page) > $this->range) {
+        if (($this->getTotalPages() - $this->current_page) > $this->range) {
             $pagelist[] = $dots;
-            $pagelist[] = new PageItem(true, $this->getTotalPages(), $this->getTotalPages());
+            $pagelist[] = new PageItem(
+                true,
+                $this->getTotalPages(),
+                $this->getTotalPages(),
+                false,
+                $this->params
+            );
         }
 
-        if($this->hasNextPage()) {
+        if ($this->hasNextPage()) {
             $pagelist[] = new PageItem(
                 true,
                 'next',
@@ -285,7 +302,7 @@ class Pagenator
      */
     public function getStopPoint(): int
     {
-        if($this->current_page > ($this->getTotalPages() - ($this->range * 2))) {
+        if ($this->current_page > ($this->getTotalPages() - ($this->range * 2))) {
             return $this->getTotalPages() + ($this->range * 2);
         }
 

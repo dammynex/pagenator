@@ -69,6 +69,27 @@ class PageItem
     }
 
     /**
+     * Get URL query for page item
+     *
+     *
+     * @return string
+     */
+    public function getUrlQuery(): string
+    {
+        if (!$this->is_page) {
+            return '';
+        }
+
+        $query = '?page=' . $this->value;
+
+        if (!$this->params) {
+            return $query;
+        }
+
+        return $query . '&' . $this->getParams();
+    }
+
+    /**
      * Get value
      *
      * @return integer
